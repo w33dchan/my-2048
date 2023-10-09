@@ -1,0 +1,91 @@
+﻿<Window x:Class="Game2048.GameWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Game2048"
+        mc:Ignorable="d"
+        Background="#BBADA0"
+        Title="2048" Height="660" Width="900" MinHeight="660" MinWidth="900" MaxHeight="660" MaxWidth="900" KeyDown="Window_KeyDown">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="160"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="160"/>
+        </Grid.RowDefinitions>
+        <Border x:Name="cellr0c0" Grid.Row="0" Grid.Column="0" Margin="15,15,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr0c0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr0c1" Grid.Row="0" Grid.Column="1" Margin="5,15,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr0c1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr0c2" Grid.Row="0" Grid.Column="2" Margin="5,15,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr0c2" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr0c3" Grid.Row="0" Grid.Column="3" Margin="5,15,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr0c3" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr1c0" Grid.Row="1" Grid.Column="0" Margin="15,5,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr1c0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr1c1" Grid.Row="1" Grid.Column="1" Margin="5,5,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr1c1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr1c2" Grid.Row="1" Grid.Column="2" Margin="5,5,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr1c2" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr1c3" Grid.Row="1" Grid.Column="3" Margin="5,5,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr1c3" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr2c0" Grid.Row="2" Grid.Column="0" Margin="15,5,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr2c0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr2c1" Grid.Row="2" Grid.Column="1" Margin="5,5,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr2c1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr2c2" Grid.Row="2" Grid.Column="2" Margin="5,5,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr2c2" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr2c3" Grid.Row="2" Grid.Column="3" Margin="5,5,5,5" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr2c3" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr3c0" Grid.Row="3" Grid.Column="0" Margin="15,5,5,15" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr3c0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr3c1" Grid.Row="3" Grid.Column="1" Margin="5,5,5,15" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr3c1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr3c2" Grid.Row="3" Grid.Column="2" Margin="5,5,5,15" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr3c2" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+        <Border x:Name="cellr3c3" Grid.Row="3" Grid.Column="3" Margin="5,5,5,15" BorderThickness="4,4,4,4" CornerRadius="10,10,10,10">
+            <TextBlock x:Name="tbr3c3" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="UD Digi Kyokasho NP-B" FontSize="36"/>
+        </Border>
+
+        <Rectangle x:Name="gameOverBack" Grid.Row="0" Grid.Column="4" RadiusX="8" RadiusY="8" Fill="#FF8F74CC" Margin="40,15,40,100" Visibility="Hidden"/>
+        <Label x:Name="gameOverText" Grid.Row="0" Grid.Column="4" Content="you lose!" VerticalAlignment="Top" HorizontalContentAlignment="Center" 
+               FontFamily="UD Digi Kyokasho NP-B" FontSize="30" Foreground="White" Padding="5,5,5,5" Margin="0,17,0,0" Visibility="Hidden"/>
+
+        <Rectangle Grid.Row="0" Grid.RowSpan="2" Grid.Column="4" Margin="40,90,40,90" RadiusX="8" RadiusY="8" Fill="#FFEDB585"/>
+        <Label Grid.Row="0" Grid.Column="4" Content="Score" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" 
+               FontFamily="UD Digi Kyokasho NP-B" FontSize="36" Foreground="White"/>
+        <Label x:Name="tbScore" Grid.Row="1" Grid.Column="4" Content="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" 
+               FontFamily="UD Digi Kyokasho NK-R" FontSize="30" FontWeight="Bold" Foreground="White"/>
+
+        <Button x:Name="restart" Grid.Row="2" Grid.Column="4" Content="Restart" Margin="60,45" FontFamily="UD Digi Kyokasho NK-B" FontSize="28" Background="#FFEDB585" Foreground="White" BorderThickness="0,0,0,0" Click="Restart_Click">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="10"></Setter>
+                </Style>
+            </Button.Resources>
+        </Button>
+    </Grid>
+</Window>

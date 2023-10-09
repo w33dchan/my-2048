@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+	<PublishSingleFile>true</PublishSingleFile>
+	<SelfContained>true</SelfContained>
+    <ApplicationIcon>Resources\Icons\download.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Page Remove="App\App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="App\App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Icons\download.ico" />
+  </ItemGroup>
+
+</Project>
