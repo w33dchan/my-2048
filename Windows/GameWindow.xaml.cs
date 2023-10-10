@@ -1,8 +1,10 @@
 ﻿using Game2048.Resources;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
+using System.Data.SQLite;
+using System.IO;
 
 namespace Game2048
 {
@@ -11,6 +13,7 @@ namespace Game2048
     /// </summary>
     public partial class GameWindow : Window
     {
+        private readonly TimeSpan halfSecond = new(0, 0, 0, 0, 500);
         private readonly (byte, byte, byte)[] cellColors = new (byte, byte, byte)[]
         {
             (0xCD, 0xC1, 0xB4), // no value
@@ -32,11 +35,34 @@ namespace Game2048
             (0xF9, 0xF6, 0xF2)  // else
         };
         private Game gameInfo;
+        private DateTime gameStart;
+        private readonly DispatcherTimer dt;
 
         public GameWindow()
         {
             InitializeComponent();
             gameInfo = new Game();
+
+            if (!Directory.Exists("C:\\ProgramData\\My2048data"))
+            {
+                Directory.CreateDirectory("C:\\ProgramData\\My2048data");
+            }
+
+            if (!File.Exists("C:\\ProgramData\\My2048data\\ScoreData.sqlite"))
+            {
+                SQLiteConnection.CreateFile("C:\\ProgramData\\My2048data\\ScoreData.sqlite");
+            }
+            
+            CreateTableScoreData();
+
+            dt = new()
+            {
+                Interval = new TimeSpan(0, 0, 1),
+                IsEnabled = false
+            };
+            dt.Tick += Timer_Tick;
+
+            tbRecord.Content = $"Record: {GetMaxScore()}";
             SetGameField();
         }
 
@@ -159,15 +185,36 @@ namespace Game2048
             cellr3c3.Background = new SolidColorBrush(Color.FromRgb(backColor.Item1, backColor.Item2, backColor.Item3));
             tbr3c3.Foreground = new SolidColorBrush(Color.FromRgb(foreColor.Item1, foreColor.Item2, foreColor.Item3));
         }
-        
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            int time = (int)(DateTime.Now - gameStart).TotalSeconds; 
+
+            if (time == 7200)
+            {
+                dt.Stop();
+                gameInfo.LoseGame();
+                _ = MessageBox.Show("Time's up!", "Game over", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
+            }
+
+            tbTimeSpan.Content = $"{time / 60:d2}:{time % 60:d2}";
+        }
+
         private void Restart_Click(object sender, RoutedEventArgs e)
         {
             gameOverBack.Visibility = Visibility.Hidden;
             gameOverText.Visibility = Visibility.Hidden;
 
+            if (dt.IsEnabled)
+            {
+                dt.Stop();
+            }
+
             gameInfo = new Game();
             SetGameField();
+            tbRecord.Content = $"Record: {GetMaxScore()}";
             tbScore.Content = gameInfo.Score.ToString();
+            tbTimeSpan.Content = "start game...";
         }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -202,19 +249,90 @@ namespace Game2048
 
             if (state == Game.State.Losed)
             {
+                dt.Stop();
+
+                if (gameInfo.Score > GetMaxScore())
+                {
+                    MessageBox.Show($"Congrats! You set a new record of {gameInfo.Score}!", "New record!", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.None);
+                }
+
+                SetNewMaxScore(gameInfo.Score, (int)(DateTime.Now - gameStart).TotalSeconds, false);
                 gameOverText.Content = "you lose!";
                 gameOverBack.Visibility = Visibility.Visible;
                 gameOverText.Visibility = Visibility.Visible;
                 MessageBox.Show("You lose!", "Game over", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
+
             }
 
             if (state == Game.State.Won)
             {
+                dt.Stop();
+                SetNewMaxScore(gameInfo.Score, (int)(DateTime.Now - gameStart).TotalSeconds, true);
                 gameOverText.Content = "victory!";
                 gameOverBack.Visibility = Visibility.Visible;
                 gameOverText.Visibility = Visibility.Visible;
                 MessageBox.Show("You won!", "Victory", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.None);
             }
+
+            if (state == Game.State.Running && !dt.IsEnabled)
+            {
+                gameStart = DateTime.Now - halfSecond;
+                dt.IsEnabled = true;
+            }
+        }
+        
+        private static void CreateTableScoreData()
+        {
+            string connStr = @"Data Source=C:\ProgramData\My2048data\ScoreData.sqlite;";
+            SQLiteConnection connection = new(connStr);
+            connection.Open();
+
+            if (connection.State == System.Data.ConnectionState.Open)
+            {
+                SQLiteCommand command = new("create table if not exists ScoreHistory (PlayTime text not null primary key, Score int not null, GameDuration text not null, IsVictory int not null)", connection);
+
+                command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+        }
+
+        private static void SetNewMaxScore(long score, int seconds, bool isVictory)
+        {
+            string connStr = @"Data Source=C:\ProgramData\My2048data\ScoreData.sqlite;";
+            SQLiteConnection connection = new(connStr);
+            connection.Open();
+
+            if (connection.State == System.Data.ConnectionState.Open)
+            {
+                SQLiteCommand command = new("insert into ScoreHistory values" +
+                    $"('{((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds()}', $Score, $Duration, $IsVictory)", connection);
+                SQLiteParameter paramScore = new("$Score", score);
+                SQLiteParameter paramDuration = new("$Duration", $"{seconds / 3600:d2}{seconds / 60 % 60:d2}{seconds % 60:d2}");
+                SQLiteParameter paramIsVictory = new("$IsVictory", isVictory ? 1 : 0);
+                command.Parameters.AddRange(new SQLiteParameter[] { paramScore, paramDuration, paramIsVictory });
+
+                _ = command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+        }
+
+        private static long GetMaxScore()
+        {
+            string connStr = @"Data Source=C:\ProgramData\My2048data\ScoreData.sqlite;";
+            SQLiteConnection connection = new(connStr);
+            connection.Open();
+            long maxScore = 0;
+
+            if (connection.State == System.Data.ConnectionState.Open)
+            {
+                SQLiteCommand cmdMaxScore = new("select max(Score) from ScoreHistory", connection);
+                maxScore = Convert.ToInt64(Convert.IsDBNull(cmdMaxScore.ExecuteScalar()) ? 0 : cmdMaxScore.ExecuteScalar());
+            }
+
+            connection.Close();
+            return maxScore;
         }
     }
 }

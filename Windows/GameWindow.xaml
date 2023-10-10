@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Game2048"
         mc:Ignorable="d"
+        d:DataContext="IsDesignTimeCreatable=False"
         Background="#BBADA0"
         Title="2048" Height="660" Width="900" MinHeight="660" MinWidth="900" MaxHeight="660" MaxWidth="900" KeyDown="Window_KeyDown">
     <Grid>
@@ -80,7 +81,13 @@
         <Label x:Name="tbScore" Grid.Row="1" Grid.Column="4" Content="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" 
                FontFamily="UD Digi Kyokasho NK-R" FontSize="30" FontWeight="Bold" Foreground="White"/>
 
-        <Button x:Name="restart" Grid.Row="2" Grid.Column="4" Content="Restart" Margin="60,45" FontFamily="UD Digi Kyokasho NK-B" FontSize="28" Background="#FFEDB585" Foreground="White" BorderThickness="0,0,0,0" Click="Restart_Click">
+        <Label x:Name="tbRecord" Grid.Row="1" Grid.Column="4" Content="" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" 
+               FontFamily="UD Digi Kyokasho NK-R" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,0,0,20"/>
+        
+        <Label x:Name="tbTimeSpan" Grid.Row="2" Grid.Column="4" Content="start game..." VerticalAlignment="Top" HorizontalContentAlignment="Center" 
+               FontFamily="UD Digi Kyokasho NK-R" FontSize="30" FontWeight="Bold" Foreground="White"/>
+
+        <Button x:Name="restart" Grid.Row="2" Grid.Column="4" Content="Restart" Margin="60,80,60,10" FontFamily="UD Digi Kyokasho NK-B" FontSize="28" Background="#FFEDB585" Foreground="White" BorderThickness="0,0,0,0" Click="Restart_Click" VerticalContentAlignment="Center">
             <Button.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="10"></Setter>

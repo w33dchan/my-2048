@@ -5,8 +5,6 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	<PublishSingleFile>true</PublishSingleFile>
-	<SelfContained>true</SelfContained>
     <ApplicationIcon>Resources\Icons\download.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -20,6 +18,10 @@
 
   <ItemGroup>
     <Content Include="Resources\Icons\download.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 
 </Project>

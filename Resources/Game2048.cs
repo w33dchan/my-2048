@@ -9,7 +9,7 @@ namespace Game2048.Resources
 
         private readonly byte endpoint;
         private byte[,] field;
-        private int score;
+        private long score;
         private State gameState;
 
         public byte FieldSize
@@ -49,7 +49,7 @@ namespace Game2048.Resources
             }
         }
 
-        public int Score
+        public long Score
         {
             get
             {
@@ -86,41 +86,18 @@ namespace Game2048.Resources
             return field;
         }
 
-        private static byte SpawnNewCell()
+        private static byte RandomizeValueOfNewCell()
         {
             var rand = new Random();
 
             return (byte)rand.Next(1, 101) < 81 ? (byte)1 : (byte)2;
         }
-
-        private static byte[] GetElementSequenceAfter(byte[] oldSeq, out int gainedScore)
+        
+        private static bool AreFieldsEqual(byte[,] a, byte[,] b, byte fieldSize)
         {
-            gainedScore = 0;
-            var newSeq = new List<byte>();
-
-            for (int i = 0; i < oldSeq.Length; i++)
+            for (byte i = 0; i < fieldSize; i++)
             {
-                if (i < oldSeq.Length - 1 && oldSeq[i] == oldSeq[i + 1])
-                {
-                    gainedScore += GetCellValue((byte)(oldSeq[i] + 1));
-                    newSeq.Add((byte)(oldSeq[i] + 1));
-
-                    i++;
-                }
-                else
-                {
-                    newSeq.Add(oldSeq[i]);
-                }
-            }
-
-            return newSeq.ToArray();
-        }
-
-        private bool AreFieldsEqual(byte[,] a, byte[,] b)
-        {
-            for (byte i = 0; i < FieldSize; i++)
-            {
-                for (byte j = 0; j < FieldSize; j++)
+                for (byte j = 0; j < fieldSize; j++)
                 {
                     if (a[i, j] == b[i, j])
                     {
@@ -186,6 +163,29 @@ namespace Game2048.Resources
 
             return elements.ToArray();
         }
+        
+        private static byte[] GetElementSequenceAfter(byte[] oldSeq, out int gainedScore)
+        {
+            gainedScore = 0;
+            var newSeq = new List<byte>();
+
+            for (int i = 0; i < oldSeq.Length; i++)
+            {
+                if (i < oldSeq.Length - 1 && oldSeq[i] == oldSeq[i + 1])
+                {
+                    gainedScore += GetCellValue((byte)(oldSeq[i] + 1));
+                    newSeq.Add((byte)(oldSeq[i] + 1));
+
+                    i++;
+                }
+                else
+                {
+                    newSeq.Add(oldSeq[i]);
+                }
+            }
+
+            return newSeq.ToArray();
+        }
 
         private void CreateNewCells(int count)
         {
@@ -213,8 +213,13 @@ namespace Game2048.Resources
 
             foreach (var cell in cellsToAssign)
             {
-                field[emptyCells[cell].x, emptyCells[cell].y] = SpawnNewCell();
+                field[emptyCells[cell].x, emptyCells[cell].y] = RandomizeValueOfNewCell();
             }
+        }
+
+        internal void LoseGame()
+        {
+            gameState = State.Losed;
         }
 
         internal State HandleSwipe(Direction dir)
@@ -288,7 +293,7 @@ namespace Game2048.Resources
                 var oldField = field;
                 field = newField;
 
-                if (!AreFieldsEqual(oldField, newField))
+                if (!AreFieldsEqual(oldField, newField, FieldSize))
                 {
                     CreateNewCells(1);
                 }
@@ -305,7 +310,7 @@ namespace Game2048.Resources
                     }
                 }
 
-                if (EmptyCells.Count == 0 && AreFieldsEqual(oldField, newField) && IsMoveAvailable())
+                if (EmptyCells.Count == 0 && AreFieldsEqual(oldField, newField, FieldSize) && IsMoveAvailable())
                 {
                     gameState = State.Losed;
                     return State.Losed;
@@ -332,7 +337,7 @@ namespace Game2048.Resources
         }
     }
 
-    internal struct Point
+    internal readonly struct Point
     {
         public readonly int x;
         public readonly int y;
